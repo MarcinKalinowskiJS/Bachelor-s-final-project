@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Obrazyproduktow" optimistic-lock="version" table="obrazyproduktow">
+    <composite-id class="Pojos.ObrazyproduktowId" name="id">
+      <key-property name="idOpisu" type="int">
+        <column name="id_opisu"/>
+      </key-property>
+      <key-property name="idObrazka" type="int">
+        <column name="id_obrazka"/>
+      </key-property>
+    </composite-id>
+    <many-to-one class="Pojos.Opisyproduktow" fetch="select" insert="false" name="opisyproduktow" update="false">
+      <column name="id_opisu" not-null="true"/>
+    </many-to-one>
+    <property name="obrazek" type="binary">
+      <column name="obrazek"/>
+    </property>
+  </class>
+</hibernate-mapping>

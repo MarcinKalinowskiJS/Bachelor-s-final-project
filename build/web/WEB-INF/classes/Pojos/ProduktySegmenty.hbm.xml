@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.ProduktySegmenty" optimistic-lock="version" table="produkty_segmenty">
+    <composite-id class="Pojos.ProduktySegmentyId" name="id">
+      <key-property name="nazwaSegmentu" type="string">
+        <column length="45" name="nazwa_segmentu"/>
+      </key-property>
+      <key-property name="idProduktu" type="int">
+        <column name="id_produktu"/>
+      </key-property>
+    </composite-id>
+    <many-to-one class="Pojos.Produkty" fetch="select" insert="false" name="produkty" update="false">
+      <column name="id_produktu" not-null="true"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>

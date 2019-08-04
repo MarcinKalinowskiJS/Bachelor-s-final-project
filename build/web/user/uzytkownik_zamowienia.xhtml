@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../META-INF/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <f:metadata>
+        <f:viewAction action="#{userBean.onload(loginBean.username, loginBean.logged)}" />
+    </f:metadata>
+    <ui:define name="content">
+        <h2>Zamowienia uzytkownika #{loginBean.username}</h2>
+        <f:view>
+            <h:form>
+                <h:dataTable value="#{userBean.zamowieniaUzytkownicies}" var="zamowienie">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Produkt" />
+                        </f:facet>
+                        <h:outputText value="#{zamowienie.produkty.nazwa}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Z magazynu" />
+                        </f:facet>
+                        <h:outputText value="#{zamowienie.magazyny.wojewodztwo}, #{zamowienie.magazyny.miasto}, #{zamowienie.magazyny.ulica}, #{zamowienie.magazyny.numerBudynku}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Ilosc" />
+                        </f:facet>
+                        <h:outputText value="#{zamowienie.ilosc}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Stan" />
+                        </f:facet>
+                        <h:outputText value="#{zamowienie.stan}" />
+                    </h:column>
+                </h:dataTable>
+                
+            </h:form>
+        </f:view>
+    </ui:define>
+
+</ui:composition>

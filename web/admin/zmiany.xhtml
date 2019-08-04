@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../META-INF/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h2>Zmiany</h2>
+        <h:form>
+                <h:dataTable value="#{adminJSFManagedBean.zmiany}" var="item">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Data rozpoczecia "/>
+                        </f:facet>
+                        <h:inputText value="#{item.dataRozpoczecia}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Godzina rozpoczecia "/>
+                        </f:facet>
+                        <h:inputText value="#{item.godzinaRozpoczecia}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Godzina zakonczenia "/>
+                        </f:facet>
+                        <h:inputText value="#{item.godzinaZakonczenia}"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value=" Usuń" action="#{adminJSFManagedBean.onDelete(item)}"  />
+                    </h:column>
+                </h:dataTable>
+            <h3>Dodaj zmianę</h3>
+            <p:inputText placeholder="D rozpoczecia(dd.mm.rrrr)" value="#{zmianyBean.zmiana.dataRozpoczecia}"/>
+            <p:inputText placeholder="G rozpoczecia(hh:mm)" value="#{zmianyBean.zmiana.godzinaRozpoczecia}"/>
+            <p:inputText placeholder="G zakonczenia(hh:mm)" value="#{zmianyBean.zmiana.godzinaZakonczenia}"/>
+            <p:commandButton value="Dodaj" action="#{zmianyBean.onAdd()}"  />
+            </h:form>
+    </ui:define>
+
+</ui:composition>

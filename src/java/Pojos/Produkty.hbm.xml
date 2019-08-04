@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Produkty" optimistic-lock="version" table="produkty">
+    <id name="idProduktu" type="java.lang.Integer">
+      <column name="id_produktu"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Pojos.Opisyproduktow" fetch="select" name="opisyproduktow">
+      <column name="id_opisu"/>
+    </many-to-one>
+    <property name="kodKreskowy" type="string">
+      <column length="45" name="kod_kreskowy"/>
+    </property>
+    <property name="rodzajKodu" type="string">
+      <column length="45" name="rodzaj_kodu"/>
+    </property>
+    <property name="ilosc" type="big_decimal">
+      <column name="ilosc" precision="10" scale="4"/>
+    </property>
+    <property name="dataProdukcji" type="date">
+      <column length="10" name="data_produkcji"/>
+    </property>
+    <property name="terminPrzydatnosci" type="timestamp">
+      <column length="19" name="termin_przydatnosci"/>
+    </property>
+    <property name="gwarancja" type="java.lang.Integer">
+      <column name="gwarancja"/>
+    </property>
+    <property name="rodzajGwarancji" type="string">
+      <column length="45" name="rodzaj_gwarancji"/>
+    </property>
+    <property name="przecena" type="big_decimal">
+      <column name="przecena" precision="5"/>
+    </property>
+    <property name="cena" type="big_decimal">
+      <column name="cena" precision="12" scale="4"/>
+    </property>
+    <property name="opis" type="string">
+      <column name="opis"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="produktyStanies" table="produkty_stany">
+      <key>
+        <column name="id_produktu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.ProduktyStany"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="produktySegmenties" table="produkty_segmenty">
+      <key>
+        <column name="id_produktu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.ProduktySegmenty"/>
+    </set>
+  </class>
+</hibernate-mapping>

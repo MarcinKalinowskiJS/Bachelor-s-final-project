@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    <ui:define name="content" >
+        <div style="float:left; overflow:hidden;">
+            <h2>Dodaj szczegółowe dane produktu</h2>
+            <!-- Wyświetlanie do edycji dla pracowników -->
+            <h:form>
+                <p:panelGrid columns="2" rendered="#{loginBean.poziomDostepu>1}" id='WorkerPanel'>
+                    <f:facet name="header">
+                        Formularz dodawania produktu
+                    </f:facet>
+                    &nbsp;Id opisu:&nbsp;<p:inputText value="#{workerBean.prToAdd.idOpisu}" />
+                    &nbsp;Kod kreskowy:<p:inputText value="#{workerBean.prToAdd.kodKreskowy}" />
+                    &nbsp;Rodzaj kodu:&nbsp;<p:inputText value="#{workerBean.prToAdd.rodzajKodu}" />
+                    &nbsp;Ilosc:&nbsp;<p:inputText value="#{workerBean.prToAdd.ilosc}" />
+                    &nbsp;Data produkcji:&nbsp;<p:inputText value="#{workerBean.prToAdd.dataProdukcji}" />
+                    &nbsp;Termin przydatności:&nbsp;<p:inputText value="#{workerBean.prToAdd.terminPrzydatnosci}" />
+                    &nbsp;Gwarancja:&nbsp;<p:inputText value="#{workerBean.prToAdd.gwarancja}" />
+                    &nbsp;Rodzaj gwarancji:&nbsp;<p:inputText value="#{workerBean.prToAdd.rodzajGwarancji}" />
+                    &nbsp;Przecena:&nbsp;<p:inputText value="#{workerBean.prToAdd.przecena}" />
+                    &nbsp;Opis:&nbsp;<p:inputText value="#{workerBean.prToAdd.opis}" />
+                <p:commandButton actionListener="#{workerBean.addNewProdukt}" value="Dodaj nowy produkt"/>
+                <p:commandButton action="#{workerBean.addNewOpisyProduktow(guestBean.opisProduktu)}" value="Dodaj nowy ogólny produkt"/>
+                <p:commandButton action="#{workerBean.setProdukt(guestBean.opisProduktu)}" value="Zmień"/>
+                <p:commandButton action="#{workerBean.deleteProdukt(guestBean.opisProduktu)}" value="Usuń"/>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

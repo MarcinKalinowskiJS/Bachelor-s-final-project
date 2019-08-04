@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../META-INF/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewAction action="#{employerBean.onload(param['id'])}" />
+    </f:metadata>
+    <ui:define name="content">
+        <h2>Edytuj zmiany pracownika #{employerBean.pracownik.imie} #{employerBean.pracownik.nazwisko}</h2>
+        <f:view>
+            <h:form>
+                <p:dataTable value="#{employerBean.zmiany}" id="do_update" var="zmiana">
+                    <p:column headerText="Daty rozpoczecia zmian">
+                        <h:outputText value="#{zmiana.dataRozpoczecia}" />
+                    </p:column>
+                    <p:column headerText="Godzina rozpoczecia zmiany">
+                        <h:outputText value="#{zmiana.godzinaRozpoczecia}" />
+                    </p:column>
+                    <p:column headerText="Godzina zakonczenia zmiany">
+                        <h:outputText value="#{zmiana.godzinaZakonczenia}" />
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value=" Usuń" update="do_update" actionListener="#{employerBean.onDeleteZmiana(zmiana)}"/>
+                    </p:column>
+                </p:dataTable>
+            <h3>Dodaj zmianę</h3>
+            <p:selectOneMenu value="#{employerBean.zmiana.id}">
+                    <f:selectItems value="#{adminJSFManagedBean.zmiany}" var="zmiana" itemValue="#{zmiana.id}" itemLabel="#{zmiana.dataRozpoczecia} #{zmiana.godzinaRozpoczecia} #{zmiana.godzinaZakonczenia}" />
+                </p:selectOneMenu>
+                <p:commandButton value="Dodaj" update="do_update" actionListener="#{employerBean.onAddZmiana()}"  />
+                
+            </h:form>
+        </f:view>
+    </ui:define>
+
+</ui:composition>

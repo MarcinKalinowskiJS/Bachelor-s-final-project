@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Pracownicy" optimistic-lock="version" table="pracownicy">
+    <id name="idPracownika" type="java.lang.Integer">
+      <column name="id_pracownika"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Pojos.Stanowiska" fetch="select" name="stanowiska">
+      <column name="id_stanowiska"/>
+    </many-to-one>
+    <property name="stanowiskoOd" type="date">
+      <column length="10" name="stanowisko_od"/>
+    </property>
+    <property name="premiaStala" type="big_decimal">
+      <column name="premia_stala" precision="8"/>
+    </property>
+    <property name="premiaJednorazowa" type="big_decimal">
+      <column name="premia_jednorazowa" precision="8"/>
+    </property>
+    <property name="idUzytkownika" type="java.lang.Integer">
+      <column name="id_uzytkownika"/>
+    </property>
+    <property name="nrKonta" type="string">
+      <column length="45" name="nr_konta"/>
+    </property>
+    <property name="zaplaconeDo" type="date">
+      <column length="10" name="zaplacone_do"/>
+    </property>
+    <property name="WTrakciePlatnosci" type="java.lang.Integer">
+      <column name="w_trakcie_platnosci"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="urlopyzwolnienias" table="urlopyzwolnienia">
+      <key>
+        <column name="id_pracownika"/>
+      </key>
+      <one-to-many class="Pojos.Urlopyzwolnienia"/>
+    </set>
+    <set fetch="select" inverse="false" lazy="true" name="zmianies" table="pracownicy_zmiany">
+      <key>
+        <column name="id_pracownika" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Zmiany">
+        <column name="id_zmiany" not-null="true"/>
+      </many-to-many>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="stanies" table="stany">
+      <key>
+        <column name="id_pracownika"/>
+      </key>
+      <one-to-many class="Pojos.Stany"/>
+    </set>
+  </class>
+</hibernate-mapping>

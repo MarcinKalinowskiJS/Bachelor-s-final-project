@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    <ui:define name="content">
+        <h2>Lista produktów</h2>
+        <f:view>
+            <h:form id="KoszykForm">
+                <p:dataTable id="KoszykDT" sortBy="#{1}" value="#{guestBean.getKoszykOpisyproduktow(loginBean.userId)}" var="produkty" rowIndexVar="rowIndex">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nazwa" />
+                        </f:facet>
+                        <h:outputText value="#{produkty.nazwa}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Ilosc" />
+                        </f:facet>
+                        <h:outputText value="#{produkty.ilosc}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Cena jednostkowa" />
+                        </f:facet>
+                        <h:outputText value="#{produkty.cena} zł" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Obrazy produktu" />
+                        </f:facet>
+                        <h:link id='TooltipDlaObrazu' outcome="/magazyn/guest/szczegoly_produktu.xhtml">
+                            <ui:repeat var="obraz" value="#{guestBean.getObrazyProduktow(150, 150, produkty.idOpisu)}">
+                                <p:graphicImage id="TooltipDlaObrazu" value="#{obraz}" />
+                            </ui:repeat>
+                            <!-- Alternatywny obraz poniżej -->
+                            <p:graphicImage width="100px" height="100px" url="/images/no_image.jpg" rendered="#{empty guestBean.getObrazyProduktow(150, 150, produkty.idOpisu)}"/>
+                            <f:param name="idOpisu" value="#{produkty.idOpisu}"/>
+                            <f:param name="idProduktu" value="#{produkty.idProduktu != null ? produkty.idProduktu : -1}"/>
+                        </h:link>
+                        <p:tooltip for="KoszykForm:KoszykDT:#{rowIndex}:TooltipDlaObrazu" trackMouse="true">
+                            <p:outputLabel rendered="#{not empty produkty.opis}" value="#{produkty.opis}"/>
+                            <br/>
+                            <p:outputLabel rendered="#{not empty produkty.model}" value="Model: #{produkty.model}"/>
+                            <p:outputLabel rendered="#{not empty produkty.seria}" value=" Seria: #{produkty.seria}"/>
+                            <br/>
+                            <p:outputLabel rendered="#{not empty produkty.gwarancja}" value="Gwarancja #{produkty.gwarancja} miesięcy"/>
+                            <br/>
+                            <p:outputLabel rendered="#{not empty produkty.kodKreskowy}" value="#{produkty.kodKreskowy}"/>
+                        </p:tooltip>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton update="@form" action="#{guestBean.deleteFromKoszyk(loginBean.userId, produkty.idProduktu)}" 
+                                         value="Usuń z koszyka">
+                        </p:commandButton>
+                    </p:column>
+                    <p:summaryRow>
+                        <p:column colspan="4" style="text-align: right">
+                            <h:outputText value="Koszt całkowity:"/>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{guestBean.getKosztCalkowity(guestBean.getKoszykOpisyproduktow(loginBean.userId))}">
+                                <f:convertNumber type="currency" currencySymbol="zł "/>
+                            </h:outputText>
+                        </p:column>
+                    </p:summaryRow>
+                </p:dataTable>
+                <p:commandButton update="@form" action="#{guestBean.getPay(loginBean.userId)}" value="Przejdź do płatności"/>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

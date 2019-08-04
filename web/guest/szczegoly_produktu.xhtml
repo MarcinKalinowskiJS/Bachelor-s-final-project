@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+    <f:metadata>
+        <f:viewAction action="#{workerBean.getOpisyProduktowInWorkerBean(param['idOpisu'], param['idProduktu'])}"   />
+    </f:metadata>
+
+    <ui:define name="content" >
+        <div id="gallery" align="center">
+            <p:galleria rendered="#{guestBean.getObrazyProduktow(640, 480, param['idOpisu']).size()>0}" 
+                        panelWidth="640" panelHeight="480" var="obraz" 
+                        value="#{guestBean.getObrazyProduktow(640, 480, param['idOpisu'])}"
+                        showCaption="#{loginBean.poziomDostepu>1}">
+                <p:graphicImage value="#{obraz}" alt="#{obraz}" 
+                                title="Id opisu: #{param['idOpisu']}, Id obrazu: #{obraz.split(' ')[1]}"/>
+            </p:galleria>
+        </div>
+        <div>
+            <div style="float:left; overflow:hidden;">
+                <h2>Szczegóły produktu</h2>
+                <p:outputLabel rendered="#{workerBean.opToAdd == null}" value="Produkt nie istnieje"/>
+                <!-- Wyświetlanie do edycji dla pracowników -->
+                <h:form id="szczegolyForm" rendered="#{loginBean.poziomDostepu>1 and workerBean.opToAdd != null}">
+                    <p:panelGrid columns="2" id='WorkerPanel'>
+                        &nbsp;Nazwa:&nbsp;<p:inputText value="#{workerBean.opToAdd.nazwa}" />
+                        &nbsp;Model:<p:inputText value="#{workerBean.opToAdd.model}" />
+                        &nbsp;Seria:&nbsp;<p:inputText value="#{workerBean.opToAdd.seria}" />
+                        &nbsp;Producent:&nbsp;<p:inputText value="#{workerBean.opToAdd.producent}" />
+                        &nbsp;Gwarancja(miesięcy):&nbsp;<p:inputText value="#{workerBean.opToAdd.gwarancja}" />
+                        &nbsp;Rodzaj gwarancji:&nbsp;<p:inputText value="#{workerBean.opToAdd.rodzajGwarancji}" />
+                        <p:outputLabel value="&nbsp;W opakowaniu" rendered="#{empty workerBean.opToAdd.idWOpakowaniu}"/>
+                        <p:link id='includeColumn' rendered="#{not empty workerBean.opToAdd.idWOpakowaniu}" outcome="/magazyn/guest/ogolne_produktu.xhtml">W opakowaniu:
+                            <f:param name="idOpisu" value="#{workerBean.opToAdd.idWOpakowaniu}"/>
+                        </p:link>
+                        <p:inputText value="#{workerBean.opToAdd.idWOpakowaniu}" />
+
+                        &nbsp;Opakowanie zawiera:&nbsp;<p:inputText value="#{workerBean.opToAdd.opakowaniePo}" />
+                        &nbsp;Cena(zł):&nbsp;<p:inputText value="#{workerBean.opToAdd.cena}"/>
+                        &nbsp;Przecena(zł):&nbsp;<p:inputText value="#{workerBean.opToAdd.przecena}" />
+                        &nbsp;Data produkcji:&nbsp;<p:inputText value="#{workerBean.opToAdd.dataProdukcji}" >
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </p:inputText>
+                        &nbsp;Termin przydatności&nbsp;<p:inputText value="#{workerBean.opToAdd.terminPrzydatnosci}">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </p:inputText>
+                        &nbsp;Kod kreskowy:&nbsp;<p:inputText value="#{workerBean.opToAdd.kodKreskowy}"/>
+                        &nbsp;Rodzaj kodu:&nbsp;<p:inputText value="#{workerBean.opToAdd.rodzajKodu}" />
+                        &nbsp;Opakowanie po:&nbsp;<p:inputText value="#{workerBean.opToAdd.opakowaniePo}"/>
+                        &nbsp;Ilosc:&nbsp;<p:inputText value="#{workerBean.opToAdd.ilosc}"/>
+                        <!-- można poprawić na listę: g, kg, sztuki -->
+                        &nbsp;Rodzaj ilości:&nbsp;<p:inputText value="#{workerBean.opToAdd.rodzajIlosci}"/>
+                        &nbsp;Koszty wysyłki:<p:inputText value="#{workerBean.opToAdd.kosztyWysylki}"/>
+                        &nbsp;ID opisu:&nbsp;<p:outputLabel value="#{param['idOpisu']}" />
+                        &nbsp;Segmenty
+                        <ui:repeat value="#{workerBean.getSegmenty(workerBean.opToAdd.idProduktu)}" var="segment">
+                            <h:outputText value="#{segment}, "/>
+                        </ui:repeat>
+                        <p:outputLabel rendered="#{not empty param['idProduktu'] and param['idProduktu'] != -1}" value="&nbsp;ID produktu:&nbsp;"/>
+                        <p:outputLabel rendered="#{not empty param['idProduktu'] and param['idProduktu'] != -1}" value="#{param['idProduktu']}" />
+                    </p:panelGrid>
+                    <p:tooltip rendered="#{not empty guestBean.opisProduktu.idWOpakowaniu and guestBean.opisProduktu.idWOpakowaniu != -1}" for='includeColumn' trackMouse="true">
+                        <ui:repeat value="#{guestBean.getOpisyProduktow(guestBean.opisProduktu.idWOpakowaniu)}" var="wOpak">
+                            <p:outputLabel value=" Nazwa:#{wOpak.nazwa}"/>
+                            <p:outputLabel rendered="#{not empty wOpak.model}" value=" Model:#{wOpak.model}"/>
+                            <p:outputLabel rendered="#{not empty wOpak.seria}" value=" Seria:#{wOpak.seria}"/>
+                            <br/>
+                            <p:outputLabel rendered="#{not empty wOpak.gwarancja}" value=" Gwarancja:#{wOpak.gwarancja}"/>
+                            <p:outputLabel rendered="#{not empty wOpak.rodzajGwarancji}" value=" Rodzaj gwarancji:#{wOpak.rodzajGwarancji}"/>
+                        </ui:repeat>
+                    </p:tooltip>
+                    <p:inputTextarea value="#{workerBean.opToAdd.opis}" rows="10" cols="40" autoResize="false"/>
+                    <br/>
+                    <p:commandButton update="@form" actionListener="#{workerBean.addNewProdukt}" value="Dodaj nowy produkt">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/></p:commandButton>
+                    <br/>
+                    <p:commandButton update="@form" action="#{workerBean.addNewOpisyProduktow}" value="Dodaj nowy ogólny produkt">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:commandButton update="@form" action="#{workerBean.setOpisproduktu}" value="Zmień ogólne">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <p:commandButton update="@form" rendered="#{param['idProduktu'] != null and param['idProduktu'] != -1 and param['idProduktu'] != 0}" action="#{workerBean.setProduktDetails(param['idProduktu'])}" 
+                                     value="Zmień produkt">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:inputText binding="#{imageIdToDelete}" placeholder="Id opisu i obrazu"/>
+                    <p:commandButton update="@form" value="Usuń obraz" action="#{guestBean.deleteImage(imageIdToDelete.value, param['idProduktu'])}">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:commandButton update="@form" value="Usuń opis" action="#{workerBean.deleteOpis(workerBean.opToAdd.idOpisu)}"/>
+                    <br/>
+                    <p:inputText binding="#{segmentId}" rendered="#{param['idProduktu'] != null and param['idProduktu'] != -1 and param['idProduktu'] != 0}" placeholder="Nazwa segmentu"/>
+                    <p:commandButton update="@form" rendered="#{param['idProduktu'] != null and param['idProduktu'] != -1 and param['idProduktu'] != 0}" value="Usuń segment" action="#{workerBean.deleteSegment(segmentId.value, param['idProduktu'])}">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:commandButton update="@form" rendered="#{param['idProduktu'] != null and param['idProduktu'] != -1 and param['idProduktu'] != 0}" value="Dodaj segment" action="#{workerBean.addSegment(segmentId.value, param['idProduktu'])}">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:commandButton rendered="#{param['idProduktu'] != null and param['idProduktu'] != -1 and param['idProduktu'] != 0}" update="@form" value="Usuń produkt" action="#{workerBean.deleteProdukt(param['idOpisu'], param['idProduktu'])}">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <p:message escape="false" for="WorkerPanel"/>
+                </h:form>
+
+
+                <!-- Wyświetlanie nieedytowalnych informacji dla zwykłego użytkownika -->
+                <h:form id="GuestForm">
+                    <p:panelGrid columns="2" rendered="#{2>loginBean.poziomDostepu}" id="GuestPanel">
+                        &nbsp;Nazwa:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.nazwa}" />
+                        &nbsp;Model:<p:outputLabel value="#{workerBean.opToAdd.model}" />
+                        &nbsp;Seria:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.seria}" />
+                        &nbsp;Producent:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.producent}" />
+                        &nbsp;Gwarancja(miesięcy):&nbsp;<p:outputLabel value="#{workerBean.opToAdd.gwarancja}" />
+                        &nbsp;Rodzaj gwarancji:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.rodzajGwarancji}" />
+                        <p:outputLabel rendered="#{not empty workerBean.opToAdd.idWOpakowaniu}" value="&nbsp;W opakowaniu"/>
+                        <p:link rendered="#{not empty workerBean.opToAdd.idWOpakowaniu}" outcome="/magazyn/guest/ogolne_produktu.xhtml">
+                            <f:param name="idOpisu" value="#{workerBean.opToAdd.idWOpakowaniu}"/>
+                            <p:outputPanel rendered="#{not empty workerBean.opToAdd.idWOpakowaniu}" id='firstColumn'>
+                                <p:outputPanel id="includesColumn">
+                                    <ui:repeat value="#{guestBean.getOpisyProduktow(workerBean.opToAdd.idWOpakowaniu)}" var="wOpak">
+                                        <p:outputLabel value="#{wOpak.nazwa}" />
+                                    </ui:repeat>
+
+                                </p:outputPanel>
+                                <p:tooltip for='firstColumn' trackMouse="true">
+                                    <ui:repeat value="#{guestBean.getOpisyProduktow(workerBean.opToAdd.idWOpakowaniu)}" var="wOpak">
+                                        <p:outputLabel value=" Nazwa:#{wOpak.nazwa}"/>
+                                        <p:outputLabel rendered="#{not empty wOpak.model}" value=" Model:#{wOpak.model}"/>
+                                        <p:outputLabel rendered="#{not empty wOpak.seria}" value=" Seria:#{wOpak.seria}"/>
+                                        <br/>
+                                        <p:outputLabel rendered="#{not empty wOpak.gwarancja}" value=" Gwarancja:#{wOpak.gwarancja}"/>
+                                        <p:outputLabel rendered="#{not empty wOpak.rodzajGwarancji}" value=" Rodzaj gwarancji:#{wOpak.rodzajGwarancji}"/>
+                                    </ui:repeat>
+                                </p:tooltip>
+                            </p:outputPanel>
+                        </p:link>
+                        &nbsp;Cena:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.cena}"/>
+                        &nbsp;Przecena:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.przecena}" />
+                        &nbsp;Data produkcji:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.dataProdukcji}" />
+                        &nbsp;Termin przydatnosci:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.terminPrzydatnosci}"/>
+                        &nbsp;Opakowanie po:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.opakowaniePo}"/>
+                        &nbsp;Kod kreskowy:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.kodKreskowy}" />
+                        &nbsp;Rodzaj kodu:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.rodzajKodu}" />
+                        &nbsp;Ilość:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.ilosc}"/>
+                        &nbsp;Rodzaj ilości:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.rodzajIlosci}"/>
+                        &nbsp;Koszty wysyłki:&nbsp;<p:outputLabel value="#{workerBean.opToAdd.kosztyWysylki}"/>
+                    </p:panelGrid>
+                    <p:inputText rendered="#{loginBean.poziomDostepu==1}" binding="#{iloscDoKupienia}" placeholder="Ilość"/>
+                    <p:commandButton rendered="#{loginBean.poziomDostepu==1}" update="@form" value="Do koszyka" action="#{guestBean.uzytkownikDoKoszyka(param['idOpisu'], param['idProduktu'], iloscDoKupienia.value, loginBean.userId)}">
+                        <f:param name="idProduktu" value="#{param['idProduktu']}"/>
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <br/>
+                    <p:commandButton rendered="#{loginBean.poziomDostepu==1}" update="@form" value="Dodaj do subskrybcji" action="#{guestBean.uzytkownikSubskrybuj(param['idOpisu'], loginBean.userId)}">
+                        <f:param name="idOpisu" value="#{param['idOpisu']}"/>
+                    </p:commandButton>
+                    <p:message rendered="#{loginBean.poziomDostepu==1}" escape="false" for="GuestPanel"/>
+                </h:form>
+            </div>
+
+            <div style="float:left; overflow:hidden; padding-left: 10px;">
+                <p><h2><p:outputLabel rendered="#{2>loginBean.poziomDostepu}" value="Opis:"/></h2><br/>
+                    <p:outputLabel rendered="#{2>loginBean.poziomDostepu}" value="#{workerBean.opToAdd.opis}" />
+                </p>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

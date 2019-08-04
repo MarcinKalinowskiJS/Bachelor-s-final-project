@@ -1,0 +1,369 @@
+use Magazyn_inz;
+set foreign_key_checks=0;
+DROP TABLE uzytkownicy_opisyProduktow;
+DROP TABLE opisy_stany;
+DROP TABLE kategorie_opisy;
+DROP TABLE produkty_stany;
+DROP TABLE adresy_uzytkownicy;
+DROP TABLE pracownicy_zmiany;
+DROP TABLE produkty_segmenty;
+DROP TABLE stany_urzadzenia;
+
+DROP TABLE obrazyProduktow;
+DROP TABLE urzadzenia;
+DROP TABLE urlopyZwolnienia;
+DROP TABLE zmiany;
+DROP TABLE obecnosci;
+DROP TABLE dostawy;
+DROP TABLE produkty;
+DROP TABLE opisyProduktow;
+DROP TABLE kategorie;
+DROP TABLE magazyn;
+DROP TABLE stany;
+DROP TABLE pracownicy;
+DROP TABLE stanowiska;
+DROP TABLE uzytkownicy;
+DROP TABLE adresy;
+
+DROP TABLE logowania;
+
+CREATE TABLE logowania (
+	adres_ip VARCHAR(45) NOT NULL PRIMARY KEY,
+	ostatnie_logowanie DATETIME,
+	ilosc_logowan INTEGER UNSIGNED
+);
+CREATE TABLE adresy (
+	id_adresu INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	panstwo VARCHAR(255),
+	region VARCHAR(255),
+	kod_pocztowy VARCHAR(45),
+	miasto VARCHAR(255),
+	ulica VARCHAR(255),
+	numer_budynku VARCHAR(45),
+	numer_lokalu VARCHAR(45)
+);
+CREATE TABLE uzytkownicy (
+	id_uzytkownika INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	login VARCHAR(45),
+	haslo VARCHAR(45),
+	imie VARCHAR(45),
+	nazwisko VARCHAR(45),
+	email VARCHAR(255),
+	rodzaj_uzytkownika VARCHAR(45)
+);
+CREATE TABLE stanowiska (
+	id_stanowiska INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nazwa VARCHAR(45),
+	opis VARCHAR(255),
+	stawka DECIMAL(8,2),
+	premia_stala DECIMAL(8,2),
+	premia_jednorazowa DECIMAL(8,2)
+);
+CREATE TABLE pracownicy (
+	id_pracownika INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_stanowiska INTEGER,
+	stanowisko_od DATE,
+	premia_stala DECIMAL(8,2),
+	premia_jednorazowa DECIMAL(8,2),
+	id_uzytkownika INTEGER,
+	nr_konta VARCHAR(45),
+	zaplacone_do DATE,
+	w_trakcie_platnosci INTEGER,
+	CONSTRAINT pracownicy_stanowiska_fk FOREIGN KEY (id_stanowiska) REFERENCES stanowiska (id_stanowiska)
+);
+CREATE TABLE magazyn (
+	id INTEGER NOT NULL PRIMARY KEY,
+	id_adresu INTEGER,
+	kontaktowy_email VARCHAR(255),
+	CONSTRAINT magazyn_adresy_fk FOREIGN KEY (id_adresu) REFERENCES adresy(id_adresu)
+);
+CREATE TABLE kategorie (
+	id_kategorii INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	nazwa VARCHAR(45),
+	opis VARCHAR(255)
+);
+CREATE TABLE opisyProduktow (
+	id_opisu INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	nazwa VARCHAR(45),
+	opis VARCHAR(255),
+	id_w_opakowaniu INTEGER,
+	opakowanie_po INTEGER,
+	kod_kreskowy VARCHAR(45),
+	rodzaj_kodu VARCHAR(45),
+	producent VARCHAR(255),
+	seria VARCHAR(255),
+	model VARCHAR(255),
+	przecena DECIMAL(5,2),
+	gwarancja INTEGER,
+	rodzaj_gwarancji VARCHAR(45),
+	termin_przydatnosci DATETIME,
+	data_produkcji DATETIME,
+cena Decimal(12,4),
+ilosc Decimal(10,4),
+rodzaj_ilosci VARCHAR(45),
+koszty_wysylki VARCHAR(255)
+);
+CREATE TABLE produkty (
+	id_produktu INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	id_opisu INTEGER,
+	kod_kreskowy VARCHAR(45),
+	rodzaj_kodu VARCHAR(45),
+	ilosc DECIMAL(10,4),
+	data_produkcji DATE,
+	termin_przydatnosci DATETIME,
+	gwarancja INTEGER,
+	rodzaj_gwarancji VARCHAR(45),
+	przecena DECIMAL(5,2),
+cena Decimal(12,4),
+opis VARCHAR(255),
+CONSTRAINT produkty_opisyProduktow_fk FOREIGN KEY (id_opisu) REFERENCES opisyProduktow (id_opisu)
+);
+CREATE TABLE stany (
+	id_stanu INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	nazwa_stanu VARCHAR(45),
+	data_rozpoczecia DATETIME,
+	data_zakonczenia DATETIME,
+	dodatkowe_informacje VARCHAR(255),
+	id_adresu INTEGER,
+	koniec_gwarancji DATE,
+	poczatek_naprawy DATE,
+	koniec_naprawy DATE,
+	id_uzytkownika INTEGER,
+	id_pracownika INTEGER,
+	wczesniejszy_stan INTEGER,
+	CONSTRAINT stany_adresy_fk FOREIGN KEY (id_adresu) REFERENCES adresy (id_adresu),
+	CONSTRAINT stany_uzytkownicy_fk FOREIGN KEY (id_uzytkownika) REFERENCES uzytkownicy (id_uzytkownika),
+	CONSTRAINT stany_pracownicy_fk FOREIGN KEY (id_pracownika) REFERENCES pracownicy (id_pracownika),
+	CONSTRAINT stany_stany_fk FOREIGN KEY (wczesniejszy_stan) REFERENCES stany (id_stanu)
+);
+CREATE TABLE dostawy (
+	id_dostawy INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	nazwa_dostawcy VARCHAR(255),
+	id_stanu INTEGER,
+	czas_dostawy DATETIME,
+	CONSTRAINT dostawy_stany_fk FOREIGN KEY (id_stanu) REFERENCES stany (id_stanu)
+);
+CREATE TABLE obecnosci (
+	id_obecnosci INTEGER NOT NULL  AUTO_INCREMENT PRIMARY KEY,
+	wejscie DATETIME,
+	wyjscie DATETIME
+);
+CREATE TABLE zmiany (
+	id_zmiany INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	rozpoczecie DATETIME,
+	zakonczenie DATETIME
+);
+CREATE TABLE urlopyZwolnienia (
+	id_wolnego INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_pracownika INTEGER,
+	rozpoczecie DATE,
+	zakonczenie DATE,
+	rodzaj VARCHAR(45),
+	CONSTRAINT urlopyZwolnienia_pracownicy_fk FOREIGN KEY (id_pracownika) REFERENCES pracownicy (id_pracownika)
+);
+CREATE TABLE urzadzenia (
+	id_urzadzenia INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nazwa VARCHAR(45),
+	ostatni_serwis DATE
+);
+CREATE TABLE obrazyProduktow (
+	id_opisu INTEGER,
+	id_obrazka INTEGER,
+	obrazek LONGBLOB,
+	PRIMARY KEY(id_opisu, id_obrazka),
+	CONSTRAINT obrazyProduktow_opisyProduktow_fk FOREIGN KEY (id_opisu) REFERENCES opisyProduktow (id_opisu)
+);
+
+CREATE TABLE stany_urzadzenia (
+	id_stanu INTEGER,
+	id_urzadzenia INTEGER,
+	PRIMARY KEY(id_stanu, id_urzadzenia),
+	CONSTRAINT stany_urzadzenia_stany_fk FOREIGN KEY (id_stanu) REFERENCES stany (id_stanu),
+	CONSTRAINT stany_urzadzenia_urzadzenia_fk FOREIGN KEY (id_urzadzenia) REFERENCES urzadzenia (id_urzadzenia)
+);
+CREATE TABLE produkty_segmenty (
+	nazwa_segmentu VARCHAR(45),
+	id_produktu INTEGER,
+	PRIMARY KEY(nazwa_segmentu, id_produktu),
+	CONSTRAINT produkty_segmenty_produkty_fk FOREIGN KEY (id_produktu) REFERENCES produkty (id_produktu)
+);
+CREATE TABLE pracownicy_zmiany (
+	id_pracownika INTEGER,
+	id_zmiany INTEGER,
+	PRIMARY KEY (id_pracownika, id_zmiany),
+	CONSTRAINT pracownicy_zmiany_pracownicy_fk FOREIGN KEY (id_pracownika) REFERENCES pracownicy (id_pracownika),
+	CONSTRAINT pracownicy_zmiany_zmiany_fk FOREIGN KEY (id_zmiany) REFERENCES zmiany (id_zmiany)
+);
+CREATE TABLE adresy_uzytkownicy (
+	id_uzytkownika INTEGER,
+	id_adresu INTEGER,
+	PRIMARY KEY(id_uzytkownika, id_adresu),
+	CONSTRAINT adresy_uzytkownicy_uzytkownicy_fk FOREIGN KEY (id_uzytkownika) REFERENCES uzytkownicy (id_uzytkownika),
+	CONSTRAINT adresy_uzytkownicy_adresy_fk FOREIGN KEY (id_adresu) REFERENCES adresy (id_adresu)
+);
+CREATE TABLE produkty_stany (
+	id_produktu INTEGER,
+	id_stanu INTEGER,
+ilosc DECIMAL(10,4),
+	PRIMARY KEY(id_produktu, id_stanu),
+	CONSTRAINT produkty_stany_produkty_fk FOREIGN KEY (id_produktu) REFERENCES produkty (id_produktu),
+	CONSTRAINT produkty_stany_stany_fk FOREIGN KEY (id_stanu) REFERENCES stany (id_stanu)
+);
+CREATE TABLE kategorie_opisy (
+	id_kategorii INTEGER,
+	id_opisu INTEGER,
+	PRIMARY KEY(id_kategorii, id_opisu),
+	CONSTRAINT kategorie_opisy_kategorie_fk FOREIGN KEY (id_kategorii) REFERENCES kategorie (id_kategorii),
+	CONSTRAINT kategorie_opisy_opisy_fk FOREIGN KEY (id_opisu) REFERENCES opisyProduktow (id_opisu)
+);
+CREATE TABLE opisy_stany (
+	id_stanu INTEGER,
+	id_opisu INTEGER,
+	ilosc DECIMAL(10,4),
+	PRIMARY KEY(id_stanu, id_opisu),
+	CONSTRAINT opisy_stany_stany_fk FOREIGN KEY (id_stanu) REFERENCES stany (id_stanu),
+	CONSTRAINT opisy_stany_opisy_fk FOREIGN KEY (id_opisu) REFERENCES opisyProduktow (id_opisu)
+);
+CREATE TABLE uzytkownicy_opisyProduktow (
+	id_uzytkownika INTEGER,
+	id_opisu INTEGER,
+	PRIMARY KEY(id_uzytkownika, id_opisu),
+	CONSTRAINT uzytkownicy_opisyProduktow_uzytkownicy_fk FOREIGN KEY (id_uzytkownika) REFERENCES uzytkownicy (id_uzytkownika),
+	CONSTRAINT uzytkownicy_opisyProduktow_opisyProduktow_fk FOREIGN KEY (id_opisu) REFERENCES opisyProduktow (id_opisu)
+);
+
+INSERT INTO logowania (adres_ip, ostatnie_logowanie, ilosc_logowan)
+VALUES ('192.168.0.100', '2018-11-05 19:00:00', 7);
+INSERT INTO logowania (adres_ip, ostatnie_logowanie, ilosc_logowan)
+VALUES ('10.101.0.100', '2017-11-05 19:00:00', 4);
+INSERT INTO logowania (adres_ip, ostatnie_logowanie, ilosc_logowan)
+VALUES ('10.10.0.102', '2017-12-24 08:00:00', 6);
+
+INSERT INTO adresy (id_adresu, panstwo, region, kod_pocztowy, miasto, ulica, numer_budynku)
+VALUES (1, 'Polska', 'Podlaskie', '16-010', 'Sochonie', 'Leśna', '3A');
+INSERT INTO adresy (id_adresu, panstwo, region, kod_pocztowy, miasto, ulica, numer_budynku)
+VALUES (2, 'Polska', 'Małopolskie', '10-090', 'Wasilków', 'Towarowa', '23');
+INSERT INTO adresy (id_adresu, panstwo, region, kod_pocztowy, miasto, ulica, numer_budynku)
+VALUES (3, 'Polska', 'Pomorskie', '19-101', 'Gdańsk', 'Składowa', '7');
+
+INSERT INTO uzytkownicy (id_uzytkownika, login, haslo, rodzaj_uzytkownika)
+VALUES (1, 'admin', 'haslo123', 'admin');
+INSERT INTO uzytkownicy (id_uzytkownika, login, haslo, imie, nazwisko, email, rodzaj_uzytkownika)
+VALUES (2, 'marcin123', 'haslo123', 'Marcin', 'Kowalski', 'mkowalski@gmail.com', 'supervisor');
+INSERT INTO uzytkownicy (id_uzytkownika, login, haslo, imie, nazwisko, email, rodzaj_uzytkownika)
+VALUES (3, 'bartek123', 'haslo123', 'Bartek', 'Kowalski', 'bkowalski@gmail.com', 'worker');
+INSERT INTO uzytkownicy (id_uzytkownika, login, haslo, imie, nazwisko, email, rodzaj_uzytkownika)
+VALUES (4, 'slawomir11', 'haslo123', 'Slawomir', 'Kalinowski', 'skalinowski@gmail.com', 'user');
+INSERT INTO uzytkownicy (id_uzytkownika, login, haslo, imie, nazwisko, email, rodzaj_uzytkownika)
+VALUES (5, 'accountant', 'haslo123', 'Anna', 'Zabłocka', 'azablocka@gmail.com', 'accountant');
+INSERT INTO uzytkownicy(id_uzytkownika, login, haslo, imie, nazwisko, email, rodzaj_uzytkownika)
+VALUES (6, 'user', 'haslo123', 'Marcin', 'Kalinowski', 'ziomziomziom9@gmail.com', 'user');
+
+INSERT INTO stanowiska (id_stanowiska, nazwa, opis, stawka)
+VALUES (1, 'magazynier', 'Przemieszczanie towarów w magazynie', '12.50');
+INSERT INTO stanowiska (id_stanowiska, nazwa, opis, stawka)
+VALUES (2, 'kierownik magazynu', 'Nadzorca pracy magazynu', '18.00');
+INSERT INTO stanowiska (id_stanowiska, nazwa, opis, stawka)
+VALUES (3, 'ksiegowy', 'Wypłaty pensji i księgowość', '15.00');
+
+
+INSERT INTO pracownicy (id_pracownika, id_stanowiska, stanowisko_od, id_uzytkownika, nr_konta, zaplacone_do)
+VALUES(1, 2, '2016-01-01', 2, '57 1750 0012 1566 8652 1069 7393', '2018-11-01');
+INSERT INTO pracownicy (id_pracownika, id_stanowiska, stanowisko_od, id_uzytkownika, nr_konta, zaplacone_do)
+VALUES(2, 1, '2016-01-01', 3, '70 8074 1013 3559 6829 7139 8194', '2018-11-01');
+INSERT INTO pracownicy (id_pracownika, id_stanowiska, stanowisko_od, id_uzytkownika, nr_konta, zaplacone_do)
+VALUES(3, 3, '2016-01-01', 5, '78 1440 1068 0900 4426 7944 1842', '2018-11-01');
+
+INSERT INTO magazyn VALUES (1, 2, 'magazyntowarowa@gmail.com');
+
+INSERT INTO kategorie VALUES (1, 'Meble', 'Umebluj swój dom');
+INSERT INTO kategorie VALUES (2, 'Rośliny ogrodowe', 'Rośliny dla Twojego ogrodu');
+INSERT INTO kategorie VALUES (3, "RTV", "Tylko najlepszy sprzęt RTV dla Twojego domu");
+
+INSERT INTO opisyProduktow (id_opisu, nazwa, opis, opakowanie_po, producent, model, gwarancja, data_produkcji, cena, koszty_wysylki, rodzaj_ilosci)
+VALUES (1, 'Krzeslo', 'Idealnie pasuje do każdego mieszkania', 2, 'BRW', 'A127', 12, "2018-01-01 10:00:00", '90', '1-15 5-25 10-40', 'Sztuki');
+INSERT INTO opisyProduktow (id_opisu, nazwa, opis, opakowanie_po, producent, model, gwarancja, data_produkcji, cena, koszty_wysylki, rodzaj_ilosci)
+VALUES (2, 'Telewizor', 'Orion 20" 1990', 1, 'Orion', 'T-1000', 36, "2018-03-01 09:10:00", '200.99', '1-25 5-45 10-60', 'Sztuki');
+INSERT INTO opisyProduktow (id_opisu, nazwa, opis, opakowanie_po, producent, model, gwarancja, data_produkcji, cena, koszty_wysylki, rodzaj_ilosci)
+VALUES (3, 'Telewizor', 'Philips 45" 2017 LCD FullHD', 1, "Philips", "GR-2018", 36, "2018-10-10 15:25:00", '1200',  '1-30 5-50 10-70', 'Sztuki');
+INSERT INTO opisyProduktow (id_opisu, nazwa, opis, producent, cena, koszty_wysylki, rodzaj_ilosci) 
+VALUES (4, "Ziemniaki", "Irga z polskich pól", CONCAT('Irga &', ' Company'), 0.89, "1-15 20-20 100-80", "kg");
+
+
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji)
+VALUES (1, 1, "7 501054 530107", "EAN-13", 100, "2017-06-18");
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji)
+VALUES (2, 1, "7 501054 530121", "EAN-13", 100, "2018-08-30");
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji)
+VALUES (3, 2, "5 150450 211530", "EAN-13", 25, "2010-12-30");
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji, cena)
+VALUES (4, 2, "5 150450 211540", "EAN-13", 25, "2012-08-11", '120');
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji, cena)
+VALUES (5, 2, "5 150450 211545", "EAN-13", 50, "2015-10-10", '190');
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji, termin_przydatnosci) 
+VALUES (6, 4, "5 231327 000451", "EAN-13", 1000, "2016-06-10", "2017-12-10 10:15:17");
+INSERT INTO produkty (id_produktu, id_opisu, kod_kreskowy, rodzaj_kodu, ilosc, data_produkcji, termin_przydatnosci)
+VALUES (7, 4, "5 231327 000453", "EAN-13", 1000, "2017-06-25", "2018-12-25 21:11:12");
+
+INSERT INTO stany (id_stanu, nazwa_stanu, data_rozpoczecia, data_zakonczenia, id_pracownika)
+VALUES (1, "Zamówiony u dostawcy", "2018-11-08 12:00:00", "2018-11-08 12:00:00", 2);
+INSERT INTO stany (id_stanu, nazwa_stanu, data_rozpoczecia, data_zakonczenia, id_pracownika)
+VALUES (2, "Zamówiony u dostawcy", "2019-01-01 10:00:00", "2019-01-01 10:00:00", 2);
+
+INSERT INTO dostawy (id_dostawy, nazwa_dostawcy, id_stanu, czas_dostawy)
+VALUES (1, "Philips", 1, "2018-11-10 12:00:00");
+
+INSERT INTO obecnosci (id_obecnosci, wejscie, wyjscie)
+VALUES (1, "2018-11-08 05:57:13", "2018-11-08 14:05:01");
+INSERT INTO obecnosci (id_obecnosci, wejscie, wyjscie)
+VALUES (2, "2018-11-08 05:59:21", "2018-11-08 14:02:15");
+INSERT INTO obecnosci (id_obecnosci, wejscie, wyjscie)
+VALUES (3, "2018-11-09 05:58:10", "2018-11-08 14:01:31");
+INSERT INTO obecnosci (id_obecnosci, wejscie, wyjscie)
+VALUES (4, "2018-11-09 05:50:10", "2018-11-08 14:00:19");
+
+INSERT INTO zmiany (id_zmiany, rozpoczecie, zakonczenie)
+VALUES (1, "2018-11-08 06:00:00", "2018-11-08 14:00:00");
+INSERT INTO zmiany (id_zmiany, rozpoczecie, zakonczenie)
+VALUES (2, "2018-11-09 06:00:00", "2018-11-08 14:00:00");
+
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("1A", 1);
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("1A", 2);
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("2C", 3);
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("2C", 4);
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("2C", 5);
+INSERT INTO produkty_segmenty (nazwa_segmentu, id_produktu)
+VALUES ("2B", 5);
+
+INSERT INTO pracownicy_zmiany (id_pracownika, id_zmiany)
+VALUES (1, 1);
+INSERT INTO pracownicy_zmiany (id_pracownika, id_zmiany)
+VALUES (1, 2);
+INSERT INTO pracownicy_zmiany (id_pracownika, id_zmiany)
+VALUES (2, 1);
+INSERT INTO pracownicy_zmiany (id_pracownika, id_zmiany)
+VALUES (2, 2);
+
+INSERT INTO adresy_uzytkownicy (id_uzytkownika, id_adresu)
+VALUES (4, 1);
+
+INSERT INTO kategorie_opisy (id_kategorii, id_opisu)
+VALUES (1, 1);
+INSERT INTO kategorie_opisy (id_kategorii, id_opisu)
+VALUES (3, 2);
+
+INSERT INTO opisy_stany (id_stanu, id_opisu, ilosc)
+VALUES (1, 2, 150);
+
+INSERT INTO uzytkownicy_opisyProduktow (id_uzytkownika, id_opisu)
+VALUES (6, 1);
+
+
+
+
+

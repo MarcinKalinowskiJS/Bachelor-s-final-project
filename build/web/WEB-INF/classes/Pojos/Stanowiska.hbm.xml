@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Stanowiska" optimistic-lock="version" table="stanowiska">
+    <id name="idStanowiska" type="java.lang.Integer">
+      <column name="id_stanowiska"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nazwa" type="string">
+      <column length="45" name="nazwa"/>
+    </property>
+    <property name="opis" type="string">
+      <column name="opis"/>
+    </property>
+    <property name="stawka" type="big_decimal">
+      <column name="stawka" precision="8"/>
+    </property>
+    <property name="premiaStala" type="big_decimal">
+      <column name="premia_stala" precision="8"/>
+    </property>
+    <property name="premiaJednorazowa" type="big_decimal">
+      <column name="premia_jednorazowa" precision="8"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="pracownicies" table="pracownicy">
+      <key>
+        <column name="id_stanowiska"/>
+      </key>
+      <one-to-many class="Pojos.Pracownicy"/>
+    </set>
+  </class>
+</hibernate-mapping>

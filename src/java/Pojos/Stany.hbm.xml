@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Stany" optimistic-lock="version" table="stany">
+    <id name="idStanu" type="java.lang.Integer">
+      <column name="id_stanu"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Pojos.Adresy" fetch="select" name="adresy">
+      <column name="id_adresu"/>
+    </many-to-one>
+    <many-to-one class="Pojos.Pracownicy" fetch="select" name="pracownicy">
+      <column name="id_pracownika"/>
+    </many-to-one>
+    <many-to-one class="Pojos.Stany" fetch="select" name="stany">
+      <column name="wczesniejszy_stan"/>
+    </many-to-one>
+    <many-to-one class="Pojos.Uzytkownicy" fetch="select" name="uzytkownicy">
+      <column name="id_uzytkownika"/>
+    </many-to-one>
+    <property name="nazwaStanu" type="string">
+      <column length="45" name="nazwa_stanu"/>
+    </property>
+    <property name="dataRozpoczecia" type="timestamp">
+      <column length="19" name="data_rozpoczecia"/>
+    </property>
+    <property name="dataZakonczenia" type="timestamp">
+      <column length="19" name="data_zakonczenia"/>
+    </property>
+    <property name="dodatkoweInformacje" type="string">
+      <column name="dodatkowe_informacje"/>
+    </property>
+    <property name="koniecGwarancji" type="date">
+      <column length="10" name="koniec_gwarancji"/>
+    </property>
+    <property name="poczatekNaprawy" type="date">
+      <column length="10" name="poczatek_naprawy"/>
+    </property>
+    <property name="koniecNaprawy" type="date">
+      <column length="10" name="koniec_naprawy"/>
+    </property>
+    <set fetch="select" inverse="false" lazy="true" name="urzadzenias" table="stany_urzadzenia">
+      <key>
+        <column name="id_stanu" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Urzadzenia">
+        <column name="id_urzadzenia" not-null="true"/>
+      </many-to-many>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="produktyStanies" table="produkty_stany">
+      <key>
+        <column name="id_stanu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.ProduktyStany"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="stanies" table="stany">
+      <key>
+        <column name="wczesniejszy_stan"/>
+      </key>
+      <one-to-many class="Pojos.Stany"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="dostawies" table="dostawy">
+      <key>
+        <column name="id_stanu"/>
+      </key>
+      <one-to-many class="Pojos.Dostawy"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="opisyStanies" table="opisy_stany">
+      <key>
+        <column name="id_stanu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.OpisyStany"/>
+    </set>
+  </class>
+</hibernate-mapping>

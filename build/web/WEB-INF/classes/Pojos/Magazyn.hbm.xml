@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Magazyn" optimistic-lock="version" table="magazyn">
+    <id name="id" type="int">
+      <column name="id"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="Pojos.Adresy" fetch="select" name="adresy">
+      <column name="id_adresu"/>
+    </many-to-one>
+    <property name="kontaktowyEmail" type="string">
+      <column name="kontaktowy_email"/>
+    </property>
+  </class>
+</hibernate-mapping>

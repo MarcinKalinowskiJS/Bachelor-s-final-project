@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Uzytkownicy" optimistic-lock="version" table="uzytkownicy">
+    <id name="idUzytkownika" type="java.lang.Integer">
+      <column name="id_uzytkownika"/>
+      <generator class="identity"/>
+    </id>
+    <property name="login" type="string">
+      <column length="45" name="login"/>
+    </property>
+    <property name="haslo" type="string">
+      <column length="45" name="haslo"/>
+    </property>
+    <property name="imie" type="string">
+      <column length="45" name="imie"/>
+    </property>
+    <property name="nazwisko" type="string">
+      <column length="45" name="nazwisko"/>
+    </property>
+    <property name="email" type="string">
+      <column name="email"/>
+    </property>
+    <property name="rodzajUzytkownika" type="string">
+      <column length="45" name="rodzaj_uzytkownika"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="stanies" table="stany">
+      <key>
+        <column name="id_uzytkownika"/>
+      </key>
+      <one-to-many class="Pojos.Stany"/>
+    </set>
+    <set fetch="select" inverse="false" lazy="true" name="adresies" table="adresy_uzytkownicy">
+      <key>
+        <column name="id_uzytkownika" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Adresy">
+        <column name="id_adresu" not-null="true"/>
+      </many-to-many>
+    </set>
+    <set fetch="select" inverse="false" lazy="true" name="opisyproduktows" table="uzytkownicy_opisyproduktow">
+      <key>
+        <column name="id_uzytkownika" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Opisyproduktow">
+        <column name="id_opisu" not-null="true"/>
+      </many-to-many>
+    </set>
+  </class>
+</hibernate-mapping>

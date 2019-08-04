@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+    <f:metadata>
+        <f:viewAction action="#{workerBean.getUserDataInWorkerBean(param['idUzytkownika'])}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h2>Dane użytkownika</h2>
+        <p:outputLabel rendered="#{!loginBean.admin and (workerBean.selectedUserData == null or loginBean.userId != workerBean.selectedUserData.idUzytkownika)}" value="Brak dostępu do danych"/>
+        <f:view>
+            <h:form id="UserForm" rendered="#{loginBean.userId == workerBean.selectedUserData.idUzytkownika || loginBean.admin}">
+                <p:panelGrid columns="2" id="UserDataPanel">
+                    &nbsp;Id uzytkownika:&nbsp;<p:outputLabel value="#{workerBean.selectedUserData.idUzytkownika}"/>
+                    &nbsp;Login:&nbsp;<p:inputText value="#{workerBean.selectedUserData.login}"/>
+                    &nbsp;Imie:&nbsp;<p:inputText value="#{workerBean.selectedUserData.imie}"/>
+                    &nbsp;Nazwisko:&nbsp;<p:inputText value="#{workerBean.selectedUserData.nazwisko}"/>
+                    &nbsp;E-mail:&nbsp;<p:inputText value="#{workerBean.selectedUserData.email}"/>
+                    &nbsp;Rodzaj uzytkownika:&nbsp;<p:inputText rendered="#{loginBean.poziomDostepu > 7 and workerBean.selectedUserData != null}" value="#{workerBean.selectedUserData.rodzajUzytkownika}"/>
+                    <p:outputLabel rendered="#{8 > loginBean.poziomDostepu}" value="#{workerBean.selectedUserData.rodzajUzytkownika}"/>
+                </p:panelGrid>
+                <p:commandButton update="@form" value="Zapisz" action="#{workerBean.saveUserDataFromWorkerBean()}"/>
+                <br/><br/>
+                <h3>Zmień hasło</h3>
+                <p:panelGrid columns="2" id="UserDataChangePasswordPanel">
+                    &nbsp;Stare haslo:&nbsp;<p:password id="oldPassword" rendered="#{workerBean.selectedUserData != null}" binding="#{oldPwd}"/>
+                    &nbsp;Nowe haslo:&nbsp;<p:password id="newPassword1" rendered="#{workerBean.selectedUserData != null}" binding="#{newPwd1}"/>
+                    &nbsp;Powtórz nowe haslo:&nbsp;<p:password id="newPassword2" rendered="#{workerBean.selectedUserData != null}" binding="#{newPwd2}" />
+                </p:panelGrid>
+                <p:commandButton update="@form" value="Zmień hasło" action="#{workerBean.changePassword(loginBean.username, oldPwd.value, newPwd1.value, newPwd2.value)}"/>
+                <p:message for="UserDataChangePasswordPanel"/>
+                <p:message for="UserDataPanel"/>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+    <f:metadata>
+        <f:viewAction action="#{guestBean.getOpisyProduktowInGuestBean(param['idOpisu'], null)}"   />
+    </f:metadata>
+
+    <ui:define name="content" >
+        <div id="gallery" align="center">
+            <p:galleria rendered="#{guestBean.getObrazyProduktow(640, 480, param['idOpisu']).size()>0}" 
+                        panelWidth="640" panelHeight="480" var="obraz" 
+                        value="#{guestBean.getObrazyProduktow(640, 480, param['idOpisu'])}">
+                <p:graphicImage value="#{obraz}" />
+            </p:galleria>
+        </div>
+        <div>
+            <div style="float:left; overflow:hidden;">
+                <h2>Ogólne dane produktu</h2>
+                <!-- Wyświetlanie do edycji dla pracowników -->
+                <h:form id="DodajOgolnyOpisForm" rendered="#{loginBean.poziomDostepu>1}">
+                    <p:panelGrid columns="2" id='WorkerPanel'>
+                        &nbsp;Nazwa:&nbsp;<p:inputText required="true" value="#{guestBean.opisProduktu.nazwa}" />
+                        &nbsp;Model:<p:inputText value="#{guestBean.opisProduktu.model}" />
+                        &nbsp;Seria:&nbsp;<p:inputText value="#{guestBean.opisProduktu.seria}" />
+                        &nbsp;Producent:&nbsp;<p:inputText required="true" value="#{guestBean.opisProduktu.producent}" />
+                        &nbsp;Gwarancja(miesięcy):&nbsp;<p:inputText value="#{guestBean.opisProduktu.gwarancja}" />
+                        &nbsp;Rodzaj gwarancji:&nbsp;<p:inputText value="#{guestBean.opisProduktu.rodzajGwarancji}" />
+                        &nbsp;W opakowaniu:&nbsp;<p:inputText value="#{guestBean.opisProduktu.idWOpakowaniu}" />
+                        &nbsp;Opakowanie zawiera:&nbsp;<p:inputText value="#{guestBean.opisProduktu.idWOpakowaniu}" />
+                        &nbsp;Przecena(zł):&nbsp;<p:inputText value="#{guestBean.opisProduktu.przecena}" />
+                        &nbsp;Data produkcji:&nbsp;<p:inputText value="#{guestBean.opisProduktu.dataProdukcji}" >
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </p:inputText>
+                        &nbsp;Kod kreskowy:&nbsp;<p:inputText value="#{guestBean.opisProduktu.kodKreskowy}" />
+                        &nbsp;Rodzaj kodu:&nbsp;<p:inputText value="#{guestBean.opisProduktu.rodzajKodu}" />
+                        &nbsp;Opis:&nbsp;<p:inputText value="#{guestBean.opisProduktu.opis}"/>
+                        &nbsp;ID opisu:&nbsp;<p:inputText readonly="true" value="#{param['idOpisu']}" />
+                    </p:panelGrid>
+                    <p:commandButton update="DodajOgolnyOpisForm" action="#{guestBean.addOpisProduktu(guestBean.opisProduktu)}" value="Dodaj ogólne"/>
+                    <p:message escape="false" for="WorkerPanel"/>
+                </h:form>
+
+                <!-- Wyświetlanie nieedytowalnych informacji dla zwykłego użytkownika -->
+                <p:panelGrid columns="2" rendered="#{2>loginBean.poziomDostepu}" id="guestPanel">
+                    &nbsp;Nazwa:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.nazwa}" />
+                    &nbsp;Model:<p:outputLabel value="#{guestBean.opisProduktu.model}" />
+                    &nbsp;Seria:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.seria}" />
+                    &nbsp;Producent:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.producent}" />
+                    &nbsp;Gwarancja(miesięcy):&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.gwarancja}" />
+                    &nbsp;Rodzaj gwarancji:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.rodzajGwarancji}" />
+
+                    <p:outputLabel rendered="#{not empty guestBean.opisProduktu.idWOpakowaniu}" value="&nbsp;W opakowaniu"/>
+                    <p:link rendered="#{not empty guestBean.opisProduktu.idWOpakowaniu}" outcome="/magazyn/guest/ogolne_produktu.xhtml">
+                        <f:param name="idOpisu" value="#{guestBean.opisProduktu.idOpisu}"/>
+                        <p:outputPanel rendered="#{not empty guestBean.opisProduktu.idWOpakowaniu}" id='firstColumn'>
+                            <p:outputPanel id="includesColumn">
+                                <ui:repeat value="#{guestBean.getOpisyProduktow(guestBean.opisProduktu.idWOpakowaniu)}" var="wOpak">
+                                    <p:outputLabel value="#{wOpak.nazwa}" />
+                                </ui:repeat>
+
+                            </p:outputPanel>
+                            <p:tooltip for='firstColumn' trackMouse="true">
+                                <ui:repeat value="#{guestBean.getOpisyProduktow(guestBean.opisProduktu.idWOpakowaniu)}" var="wOpak">
+                                    <p:outputLabel value=" Nazwa:#{wOpak.nazwa}"/>
+                                    <p:outputLabel rendered="#{not empty wOpak.model}" value=" Model:#{wOpak.model}"/>
+                                    <p:outputLabel rendered="#{not empty wOpak.seria}" value=" Seria:#{wOpak.seria}"/>
+                                    <br/>
+                                    <p:outputLabel rendered="#{not empty wOpak.gwarancja}" value=" Gwarancja:#{wOpak.gwarancja}"/>
+                                    <p:outputLabel rendered="#{not empty wOpak.rodzajGwarancji}" value=" Rodzaj gwarancji:#{wOpak.rodzajGwarancji}"/>
+                                </ui:repeat>
+                            </p:tooltip>
+                        </p:outputPanel>
+                    </p:link>
+                    &nbsp;Opakowanie zawiera:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.idWOpakowaniu}" />
+                    &nbsp;Przecena:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.przecena} zł" />
+                    &nbsp;Data produkcji:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.dataProdukcji}" />
+                    &nbsp;Termin przydatnosci:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.terminPrzydatnosci}"/>
+                    &nbsp;Kod kreskowy:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.kodKreskowy}" />
+                    &nbsp;Rodzaj kodu:&nbsp;<p:outputLabel value="#{guestBean.opisProduktu.rodzajKodu}" />
+                </p:panelGrid>
+            </div>
+            <p:message for="DodajOgolnyOpisForm"/>
+            <div id="padding_left" style="float:left; overflow:hidden;">
+                <p><h2>Opis:</h2><br/>#{guestBean.opisProduktu.opis}</p>
+            </div>
+        </div>
+
+
+
+    </ui:define>
+
+</ui:composition>

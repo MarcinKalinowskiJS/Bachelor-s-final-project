@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    <ui:define name="content">
+        <!--Wybór rodzaju zadań-->
+        <p:outputLabel style="display: inline-block;" escape="false" value="&lt;h2 &quot;class=&gt;Zadania:&nbsp;&lt;/h2&gt;"/>
+        <p:outputLabel style="display: inline-block;" rendered="#{param['taskState'] == null ? true : param['taskState'] == -3 ? true : false}" escape="false" value="&lt;h2&gt;Wszystkie&lt;/h2&gt;"/>
+        <p:link rendered="#{param['taskState'] == null ? false : param['taskState'] == -3 ? false : true }" outcome="/magazyn/worker/wszystkie_zadania.xhtml?taskState=-3">
+            <p:outputLabel value="Wszystkie"/>
+        </p:link>
+        &nbsp;
+        <p:outputLabel style="display: inline-block;" rendered="#{param['taskState'] == 0}" escape="false" value="&lt;h2&gt;Do zrobienia&lt;/h2&gt;"/>
+        <p:link rendered="#{param['taskState'] != 0 ? true : false}" outcome="/magazyn/worker/wszystkie_zadania.xhtml?taskState=0">
+            <p:outputLabel value="Do zrobienia"/>
+        </p:link>
+        &nbsp;
+        <p:outputLabel style="display: inline-block;" rendered="#{param['taskState'] == -1}" escape="false" value="&lt;h2&gt;W trakcie&lt;/h2&gt;"/>
+        <p:link rendered="#{param['taskState'] != -1 ? true : false}" outcome="/magazyn/worker/wszystkie_zadania.xhtml?taskState=-1">
+            <p:outputLabel value="W trakcie"/>
+        </p:link>
+        &nbsp;
+        <p:outputLabel style="display: inline-block;" rendered="#{param['taskState'] == -2}" escape="false" value="&lt;h2&gt;Zrobione&lt;/h2&gt;"/>
+        <p:link rendered="#{param['taskState'] != -2 ? true : false}" outcome="/magazyn/worker/wszystkie_zadania.xhtml?taskState=-2">
+            <p:outputLabel value="Zrobione"/>
+        </p:link>
+        <h:form>
+            <p:commandButton update="TaskForm @this" action="#{workerBean.updateStates}" value="Aktualizuj stany"/>
+            <p:commandButton action="/magazyn/worker/add_stan.xhtml?faces-redirect=true" value="Dodaj stan"/>
+        </h:form>
+	<f:view>
+            <h:form id="TaskForm">
+                <p:dataTable id="TaskDT" value="#{workerBean.getAllTasks(param['taskState'] == null ? -3 : param['taskState'])}" var="task" rowIndexVar="rowIndex">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{task.idStanu}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="Data rozpoczecia"/>
+                        </f:facet>
+                        <h:outputText value="#{task.dataRozpoczecia == null ? 'brak' : task.dataRozpoczecia}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="Data zakonczenia"/>
+                        </f:facet>
+                        <h:outputText value="#{task.dataZakonczenia}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="Nazwa"/>
+                        </f:facet>
+                        <h:outputText value="#{task.nazwaStanu}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+
+        </f:view>
+    </ui:define>
+
+</ui:composition>

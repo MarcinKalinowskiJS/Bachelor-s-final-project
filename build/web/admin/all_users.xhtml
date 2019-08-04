@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    <ui:define name="content">
+        <h2>Lista użytkowników</h2>
+        <f:view>
+            <h:form id="UsersForm">                
+                <p:dataTable id="UsersDT" value="#{workerBean.getAllUzytkownicy()}" var="uzytkownicy" rowIndexVar="rowIndex">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id" />
+                        </f:facet>
+                        <p:outputLabel value="#{uzytkownicy.idUzytkownika}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Login" />
+                        </f:facet>
+                        <p:outputLabel value="#{uzytkownicy.login}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="Działania">
+                            <h:outputText value="Login" />
+                        </f:facet>
+                        <p:button value="Edytuj" outcome="/magazyn/user/user_data_to_change.xhtml">
+                            <f:param name="idUzytkownika" value="#{uzytkownicy.idUzytkownika}"/> 
+                        </p:button>
+                        <p:commandButton update="@form" action="#{workerBean.deleteUserData(uzytkownicy)}" 
+                                         value="Usuń">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

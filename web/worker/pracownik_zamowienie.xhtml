@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../META-INF/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <h3>Zmiany</h3>
+    <f:metadata>
+        <f:viewAction action="#{employerBean.onload(param['emp_id'])}" />
+        <f:viewAction action="#{zamowienieBean.onload(param['order_id'])}" />
+    </f:metadata>
+    <ui:define name="content">
+        <h2>Edycja zamówienia</h2>
+        <f:view>
+            <h:form>
+                <h:outputText value="Daty rozpoczecia zmian" />
+                <h:outputText value="#{zamowienieBean}" /><br />
+            </h:form>
+
+            
+        </f:view>
+    </ui:define>
+
+</ui:composition>

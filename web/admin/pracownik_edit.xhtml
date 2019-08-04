@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../META-INF/pageTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <f:metadata>
+        <f:viewAction action="#{employerBean.onload(param['id'])}" />
+    </f:metadata>
+    <ui:define name="content">
+        <h2>Dane pracownika</h2>
+        <f:view>
+            <h:form>
+                <h:inputText value="#{employerBean.pracownik.imie}" />
+                <h:inputText value="#{employerBean.pracownik.nazwisko}" />
+                <h:selectOneMenu value="#{employerBean.pracownik.magazyny.id}">
+                    <f:selectItems value="#{magazynBean.magazyny}" var="magazyn" itemValue="#{magazyn.id}" itemLabel="#{magazyn.wojewodztwo} #{magazyn.miasto} #{magazyn.ulica} #{magazyn.numerBudynku}" />
+                </h:selectOneMenu>
+                <h:inputText value="#{employerBean.pracownik.premia}" />
+                <h:inputText value="#{employerBean.pracownik.stanowiska.nazwa}" />
+                <h:commandButton value="Zmien" action="#{employerBean.onUpdate()}"  />
+            </h:form>
+
+            
+        </f:view>
+    </ui:define>
+
+</ui:composition>

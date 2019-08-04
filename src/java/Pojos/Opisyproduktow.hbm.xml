@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 11, 2019 3:58:10 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="magazyn_inz" name="Pojos.Opisyproduktow" optimistic-lock="version" table="opisyproduktow">
+    <id name="idOpisu" type="java.lang.Integer">
+      <column name="id_opisu"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nazwa" type="string">
+      <column length="45" name="nazwa"/>
+    </property>
+    <property name="opis" type="string">
+      <column length="255" name="opis"/>
+    </property>
+    <property name="idWOpakowaniu" type="java.lang.Integer">
+      <column name="id_w_opakowaniu"/>
+    </property>
+    <property name="opakowaniePo" type="java.lang.Integer">
+      <column name="opakowanie_po"/>
+    </property>
+    <property name="kodKreskowy" type="string">
+      <column length="45" name="kod_kreskowy"/>
+    </property>
+    <property name="rodzajKodu" type="string">
+      <column length="45" name="rodzaj_kodu"/>
+    </property>
+    <property name="producent" type="string">
+      <column name="producent"/>
+    </property>
+    <property name="seria" type="string">
+      <column name="seria"/>
+    </property>
+    <property name="model" type="string">
+      <column name="model"/>
+    </property>
+    <property name="przecena" type="big_decimal">
+      <column name="przecena" precision="5"/>
+    </property>
+    <property name="gwarancja" type="java.lang.Integer">
+      <column name="gwarancja"/>
+    </property>
+    <property name="rodzajGwarancji" type="string">
+      <column length="45" name="rodzaj_gwarancji"/>
+    </property>
+    <property name="terminPrzydatnosci" type="timestamp">
+      <column length="19" name="termin_przydatnosci"/>
+    </property>
+    <property name="dataProdukcji" type="timestamp">
+      <column length="19" name="data_produkcji"/>
+    </property>
+    <property name="cena" type="big_decimal">
+      <column name="cena" precision="12" scale="4"/>
+    </property>
+    <property name="ilosc" type="big_decimal">
+      <column name="ilosc" precision="10" scale="4"/>
+    </property>
+    <property name="rodzajIlosci" type="string">
+      <column length="45" name="rodzaj_ilosci"/>
+    </property>
+    <property name="kosztyWysylki" type="string">
+      <column name="koszty_wysylki"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="obrazyproduktows" table="obrazyproduktow">
+      <key>
+        <column name="id_opisu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.Obrazyproduktow"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="kategories" table="kategorie_opisy">
+      <key>
+        <column name="id_opisu" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Kategorie">
+        <column name="id_kategorii" not-null="true"/>
+      </many-to-many>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="produkties" table="produkty">
+      <key>
+        <column name="id_opisu"/>
+      </key>
+      <one-to-many class="Pojos.Produkty"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="uzytkownicies" table="uzytkownicy_opisyproduktow">
+      <key>
+        <column name="id_opisu" not-null="true"/>
+      </key>
+      <many-to-many class="Pojos.Uzytkownicy">
+        <column name="id_uzytkownika" not-null="true"/>
+      </many-to-many>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="opisyStanies" table="opisy_stany">
+      <key>
+        <column name="id_opisu" not-null="true"/>
+      </key>
+      <one-to-many class="Pojos.OpisyStany"/>
+    </set>
+  </class>
+</hibernate-mapping>
